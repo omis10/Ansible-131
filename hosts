@@ -1,0 +1,2 @@
+[dev]
+test ansible_ssh_host=Centos-Client ansible_ssh_port=22
