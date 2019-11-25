@@ -1,0 +1,10 @@
+---
+# tasks file for scriptFTP
+
+
+ 
+      - name: "Lancement du déploiement"
+        become: true
+        become_user: root
+        shell: /root/scriptFTP.sh 
+        ignore_errors: yes
