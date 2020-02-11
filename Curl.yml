@@ -1,0 +1,29 @@
+---
+
+- hosts: test
+  become: yes
+  become_method: su
+  tasks:
+#    - name: Configure Apache
+ #     fail:
+  #    msg: 
+
+    - name: "check url"
+      command: "curl http://192.168.64.131:8080/"
+      register: checkurl
+    
+    - name: "CHECK URL GOOGLE"
+      fail: 
+        msg: "FAILED GOOLGLE"
+      when: not (checkurl.stdout_lines[0] | search('200'))
+    
+#- debug:
+ #       msg: "{{ checkurl.stdout_lines[0] | search('200') }}"
+
+  #handlers:
+   # - name: Restart Apache
+     # shell: rcapache2 restart
+      
+        
+
+

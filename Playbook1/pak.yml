@@ -1,0 +1,41 @@
+---
+
+- hosts: all
+  become: yes
+  #become_method: su
+  tasks:
+
+    - name: Check Package Apache2
+      command: rpm -qa apache2*
+      register: checkPack
+
+    - debug:
+        msg: "{{ checkPack  }}"
+
+
+    - name: Installation Apache2
+      shell: zypper in -y apache2
+      when: checkPack.stdout  == ""
+
+    - name: Check Package Apache2
+      shell: zypper in -y apache2
+      register: checkPack1
+
+    - debug:
+         msg: "{{ checkPack1.stdout_lines | select('search','already installed') | list  }}"
+
+
+    - name: "Check code directory not exists"
+      stat:
+        path: /root/Backup/hgf
+      register: code_dir_data
+
+    - debug:
+         msg: "{{code_dir_data}}"
+
+    - name: "State code directory"
+      fail:
+        msg: "Code directory should not exists"
+      when: code_dir_data.stat.exists != false
+
+

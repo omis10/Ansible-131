@@ -1,2 +1,5 @@
 [dev]
-test ansible_ssh_host=Centos-Client ansible_ssh_port=22
+
+
+[Doku]
+Sles15_test ansible_port=22 ansible_host=192.168.64.213 ansible_user=root

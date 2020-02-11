@@ -1,0 +1,24 @@
+---
+
+- hosts: all
+  become: yes
+  #become_method: su
+  tasks:
+
+    - name: "Check destination directory VERSION file"
+      stat:
+        path: "/srv/www/htdocs/www/VERSION"
+      register: version_dir_data      
+
+    - name: "Création du fichier version"
+      copy:
+        dest: "/srv/www/htdocs/www/VERSION"
+        content: 1.2.3
+        owner: wwwrun
+        group: root
+      when: version_dir_data.stat.exists 
+      run_once: yes
+
+    - debug:
+         msg: "{{ version_dir_data }}"     
+

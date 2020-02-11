@@ -1,0 +1,5 @@
+---
+# handlers file for Dokuwiki
+
+    - name: Restart Apache
+      shell: systemctl restart "{{ Package_apache }}"

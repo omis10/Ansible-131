@@ -1,0 +1,21 @@
+- name: Création de la page temporaire
+  copy:
+    src: maintenance.html
+    dest: "{{ application_web_directory }}/maintenance.html"
+    mode: 0644
+    owner: "{{ application_user }}"
+    group: "{{ application_group }}"
+
+- name: Insertion des redirections de maintenance
+  blockinfile:
+    dest: "/etc/apache2/vhosts.d/{{ application_name }}.conf"
+    insertbefore: "^</VirtualHost>$"
+    block: |
+      <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
+        RewriteRule ^.*$ /maintenance.html [L]
+      </IfModule>
+    state: present
+  notify: apache2-reloaded
+

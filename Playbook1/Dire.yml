@@ -1,0 +1,23 @@
+---
+
+- hosts: all
+  become: yes
+  #become_method: su
+  vars:
+    Directory:
+    SearchString: 
+  tasks:
+
+    - name: Configure Apache
+      shell: "find {{Directory}} -name {{SearchString}}"
+      register: checkDire
+      when: Directory is not defined and SearchString is not defined 
+      #ignore_errors: true
+
+    - debug:
+         msg: "{{checkDire}}"
+
+      
+        
+
+

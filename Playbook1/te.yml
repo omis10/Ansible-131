@@ -1,0 +1,16 @@
+---
+
+- hosts: all
+  become: yes
+  #become_method: su
+  tasks:
+          # - name: Installation Apache2
+          # become: yes
+          # shell: zypper in -y apache2
+          # register: Apache
+
+    - name: installation des modules
+      apache2_module:
+        state: present
+        name: rewrite
+       

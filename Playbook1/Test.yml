@@ -1,0 +1,10 @@
+- hosts: all
+  become: yes
+  #become_method: su
+  tasks:
+
+    - name: Replace a localhost entry with our own
+      lineinfile:
+        path: /root/test
+        regexp: '^'
+        line: 127.0.0.1 localhost

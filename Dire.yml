@@ -1,0 +1,33 @@
+---
+
+- hosts: test
+  become: yes
+  become_method: su
+  vars:
+    Directory: /root
+    SearchString: tot
+  tasks:
+#    - name: Configure Apache
+ #     fail:
+  #    msg: 
+
+    - name: "Find command "
+      shell: "find {{Directory}} -name {{SearchString}}"
+      register: checkdire
+      #when: Directory is not defined and SearchString is not defined 
+    
+   # - name: "CHECK URL GOOGLE"
+    #  fail: 
+     #   msg: "FAILED GOOLGLE"
+     # when: not (checkurl.stdout_lines[0] | search('200'))
+    
+    - debug:
+         msg: "{{ checkdire }}"
+ 
+  #handlers:
+   # - name: Restart Apache
+     # shell: rcapache2 restart
+      
+        
+
+

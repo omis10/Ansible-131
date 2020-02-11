@@ -1,0 +1,21 @@
+---
+# tasks file for testroles
+
+   - name: Check Variable Environnement SSH
+     become: yes 
+     shell: env 
+     register: CheckENV
+
+   - debug: 
+       msg: "{{ CheckENV.stdout_lines| select('search', 'SSH_TTY') | list }}"
+
+
+   - name: ADD ENV
+     become: yes 
+     shell: export SYMFONY__DIR_LOGS=/srv/www/htdocs/www/Tempfiles/Applis/iStdstand/logs
+
+   
+
+
+
+

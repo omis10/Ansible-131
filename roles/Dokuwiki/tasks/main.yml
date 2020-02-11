@@ -1,0 +1,107 @@
+---
+# tasks file for Dokuwiki
+
+    - name: Check Package Apache2
+      become: yes
+      command: rpm -qa apache2*
+      register: checkPack
+
+    - debug:
+        msg: "{{ checkPack.stdout_lines  }}"
+
+    - name: Installation Apache2
+      shell: zypper in -y "{{ Package_apache }}"
+      when: checkPack.stdout  == ""
+
+
+    - name: Check Installation Apache2
+      become: yes
+      shell: zypper in -y "{{ Package_apache }}"
+      register: checkApache
+
+    - debug:
+        msg: "{{ checkApache.stdout_lines | select('search','already installed') | list  }}"
+
+    - name: Check Package php7
+      become: yes
+      command: rpm -qa php7*
+      register: checkPackPHP
+
+    - debug:
+        msg: "{{ checkPackPHP.stdout_lines  }}"
+
+    - name: Installation PHP7
+      shell: zypper in -y "{{ Package_php }}"
+      when: checkPackPHP.stdout  == ""
+
+    - name: Check PHP7
+      become: yes
+      shell: zypper in -y "{{ Package_php }}"
+      register: CheckPHP
+
+    - debug:
+        msg: "{{ CheckPHP.stdout_lines | select('search','already installed') | list  }}"
+
+    - name: Start service apache2
+      service:
+        name: "{{item}}"
+        state: started
+      with_items: "{{Package_apache}}"
+
+    - name: Configuration Dokuwiki
+      copy:
+        src: "{{ Path_Source }}"
+        dest: "{{ Path_Directory }}"
+        owner: "{{ Application_user }}"
+        group: "{{ Application_group }}"
+        mode: u=rwx,g=rx,o=rx
+        directory_mode: yes
+        remote_src: yes
+
+    - name: Lancer commande a2enmod
+      shell: a2enmod php7
+
+    - name: Modification fichier LINE 1 httpd.conf
+      lineinfile:
+        path: "{{ Path_Conf }}"
+        backup: yes
+        state: present
+        #regexp: '^'
+        insertafter: "^{{ Ligne_After_1 }}"
+        line: "{{ Ligne_1 }}"
+        validate: '/usr/sbin/apache2ctl -f %s -t'
+      notify: Restart Apache
+
+
+    - name: Modification fichier LINE 2 httpd.conf
+      lineinfile:
+        path: "{{ Path_Conf }}"
+        state: present
+        #regexp: '^AddHandler application/x-httpd-php72 .php .php5 .php4 .php3'
+        insertafter: "^{{ Ligne_After_2 }}"
+        line: "{{ Ligne_2 }}"
+        validate: '/usr/sbin/apache2ctl -f %s -t'
+      notify: Restart Apache
+
+    - name: Modification fichier LINE 3 httpd.conf
+      lineinfile:
+        path: "{{ Path_Conf }}"
+        state: present
+        insertafter: "^{{ Ligne_After_3 }}"
+        line: "{{ Ligne_3 }}"
+        validate: '/usr/sbin/apache2ctl -f %s -t'
+      notify: Restart Apache
+
+    - name: Enabled Module Apache2
+      apache2_module:
+        state: present
+        name: "{{item}}"
+      with_items: "{{application_modules_apache}}"
+    
+    - name: Création fichier logs 
+      lineinfile:
+        path: "/var/log/ansible_Dokuwiki.log"
+        line: "{{ lookup('pipe', 'date +%d/%m/%Y-%H:%M') }}\t {{ application_name }}\t {{ application_version }}\t {{ ansible_local.set_env.machine_environnement | default('UNKOWN') }}\t {{application_type}}"
+        create: yes
+
+

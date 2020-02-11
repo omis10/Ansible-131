@@ -1,0 +1,93 @@
+---
+# Tasks file for SauvAPP
+# Created by Mohamed BENOIKKEN - 2018-2019
+# Update 14/11/2019
+# Creer un répertoire de sauvegarde avec la date du jour
+
+   - name: Create Directory Date Backup
+     file:
+       path: "/root/Backup/APPLI/{{ansible_date_time.date|replace('-','') }}"
+       state: directory
+       #register: Backup
+
+
+# Copier la sauvergarde applicative sur /root/Backup
+
+   - name: Application Backup Copy 
+     become: yes
+     shell: cp -R /home/momo/* /root/Backup/APPLI/{{ansible_date_time.date|replace('-','') }}
+     #copy: 
+       #src: /home/momo/
+       #dest: /root/Backup/APPLI/{{ansible_date_time.date|replace('-','')}}
+       #remote_src: yes 
+       #directory_mode: yes
+     register: Copie
+     ignore_errors: True
+     #failed_when: 
+     #- Copie.rc == 1
+
+   - debug:
+       msg: "{{ Copie }}"
+    
+
+# En cas de probléme un message d'erreur s'affiche 
+
+   - name:  Fail Backup Copy
+     fail:
+       msg: "Backup Copy Error"
+     when: " Copie.rc == 1 "
+
+# Lister le contenue de répertoire sauvergarder 
+
+   - name: Check Backup Copy
+     become: yes
+     shell: ls -lrt /root/Backup/APPLI/{{ansible_date_time.date|replace('-','') }}
+     register: CheckCopie
+
+   - debug:
+       msg: "{{ CheckCopie.stdout_lines }}" 
+
+       #- name: Move directory contents
+       #shell: cp -R /home/momo/* /root/Backup/APPLI/{{ansible_date_time.date }}
+
+       #   - name: Copie Sauvegarde applicatif
+       #     become: yes
+       #     copy:
+       #       src: /home/momo/
+       #       dest: /root/Backup/APPLI/{{ansible_date_time.date|replace('-','') }}
+       #     register: Copie
+       #     #ignore_errors: yes
+       #     #when: "Copie.changed != false"
+ 
+
+
+       #   - name: Define Variable
+       #     set_fact:
+       #         exists: "{{ Copie.changed }}"
+       #         ignore_errors: yes 
+       #         when: "Copie.changed == true"
+       #
+       #   - name: Display variable
+       #     #when: "Copie.changed == false"
+       #     debug: msg="{{exists}}"
+       #     #ignore_errors: yes
+
+
+       # - name: Debug Copie
+       # debug: 
+       # var: Copie.changed
+       # verbosity: 2
+
+
+     #- debug:
+     # msg: "{{ Copie.changed}}"
+
+       #directory_mode=yes
+
+       #with_fileglob:
+       #-/home/momo/*
+
+         #with_items:
+
+
+

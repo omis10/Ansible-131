@@ -1,0 +1,16 @@
+- name: Insertion des redirections de maintenance
+  blockinfile:
+    dest: "/etc/apache2/vhosts.d/{{ application_name }}.conf"
+    insertbefore: "^</VirtualHost>$"
+    block: |
+        RewriteEngine On
+        RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
+        RewriteRule ^.*$ /maintenance.html [L]
+    state: absent
+  notify: apache2-reloaded
+
+- name: Suppression de la page temporaire
+  file:
+    dest: "{{ application_web_directory }}/maintenance.html"
+    state: absent
+

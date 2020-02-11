@@ -1,0 +1,29 @@
+---
+
+- hosts: test
+  #become: yes
+  #become_method: su
+  vars:
+    epic: true
+    monumental: "yes"
+  tasks:
+#    - name: Configure Apache
+ #     fail:
+  #    msg: 
+
+    - name: "check url"
+      shell: echo "This certainly is epic !"
+      register: checkurl
+    
+    - name: "Failed ex"
+      fail:
+        msg: "ERROR APP"
+      when: not false
+
+  #handlers:
+   # - name: Restart Apache
+     # shell: rcapache2 restart
+      
+        
+
+

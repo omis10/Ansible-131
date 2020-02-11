@@ -1,0 +1,93 @@
+---
+# tasks file for testroles
+
+   - name: Create Directory date Backup
+     file:
+       path: "/root/Backup/APPLI/{{ansible_date_time.date }}"
+       state: directory
+       #register: Backup
+
+       #- debug: 
+       #msg: "{{ Backup }}"
+   
+       #- name: Move directory contents
+     #shell: cp -R /home/momo/* /root/Backup/APPLI/{{ansible_date_time.date }}
+  
+   - name: Copie Sauvegarde applicatif
+     become: yes
+     copy:
+       #src: /home/momo/*
+       #src: "{{ item }}"
+       src: /home/momo/
+       dest: /root/Backup/APPLI/{{ansible_date_time.date }}
+       #directory_mode=yes
+
+       #with_fileglob:
+       #-/home/momo/*
+
+         #with_items:
+   
+ # - name: Check Copie 
+ #   become: yes
+ #   ignore_errors: yes
+ #   shell: ls -lrt /root/Backup/APPLI/{{ansible_date_time.date }}
+ #   register: Check
+ #   when: "Check.result[0].rc = 0"
+
+       #- debug:
+       # msg: "{{ Check }}"
+
+
+   - name: Check Copie Sauvegarde 
+     become: yes
+     shell: ls -lrt /root/Backup/APPLI/{{ansible_date_time.date }}
+     register: CheckCopie
+
+   - debug:
+       msg: "{{ CheckCopie.stdout_lines }}" 
+
+   - name: Create Directory Date Livraison
+     become: yes 
+     file:
+       path: "/root/Livraisons/iStdstand/{{ansible_date_time.date }}"
+       state: directory
+   
+
+   - name: Suppression du contenu du rép iStdstand
+     become: yes
+     shell: rm -rf /srv/www/htdocs/iStdtand/*
+
+     #- name: Vérifier les sources de Livraison
+     #become: yes
+     #shell : ls -lrt /Livraisons/iStdstand/{{ansible_date_time.date }} 
+     #register: liste
+
+     #- debug: 
+     #msg: "{{ liste }}"
+
+   - name: Check Suppression Du rép iStdstand
+     become: yes
+     shell: ls -lrt /srv/www/htdocs/iStdtand/
+     register: CheckSupp
+
+   - debug:
+       msg: "Le contenu du fichier a été supprimé {{ CheckSupp.stdout_lines }}"
+
+   - name: Décompresser le contenu de fichier Tar & Copier sur l'APP iStdtand
+     become: yes
+     shell: tar -xvf /root/Livraisons/iStdstand/{{ansible_date_time.date }}/Std-Test.tar -C /srv/www/htdocs/iStdtand/
+
+
+   - name: Droit propriétaire  de l'APP istdstand
+     become: yes
+     #file: 
+     #dest: "/srv/www/htdocs/iStdtand/"
+       #state: touch
+       #owner: wwwrun
+       # group: root
+     command: chown -R wwwrun:root /srv/www/htdocs/iStdtand
+
+
+
+
+

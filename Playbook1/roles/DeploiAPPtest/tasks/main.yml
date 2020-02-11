@@ -1,0 +1,15 @@
+---
+# tasks file for DeploiAPPtest
+
+   - name: Décompresser le contenu de fichier Tar & Copier sur l'APP iStdtand
+     become: yes
+     #ignore_errors: yes
+     shell: tar -xvf /root/Livraisons/iStdstand/{{ansible_date_time.date|replace('-','') }}/Std-Test.tar -C /srv/www/htdocs/iStdtand/
+     register: checkk
+     #debug: msg="please fichier TAR"
+     #when: checkk.rc != '0'
+
+   - debug:
+       msg: "Le fichier est décompressé et copier sur l'APP iStdtand"
+     when: checkk.rc==0
+

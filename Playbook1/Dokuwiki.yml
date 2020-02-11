@@ -1,0 +1,12 @@
+---
+
+- hosts: "{{ target }}"
+  become: yes
+  #become_method: su
+  tasks:
+  roles:
+    - Dokuwiki
+      
+        
+
+

@@ -1,0 +1,21 @@
+---
+
+- hosts: all
+  become: yes
+  #become_method: su
+  tasks:
+
+    - name: "Check code directory not exists"
+      stat:
+        path: /root/Backup/hgf
+      register: code_dir_data
+
+    - debug:
+         msg: "{{code_dir_data}}"
+
+    - name: "State code directory"
+      fail:
+        msg: "Code directory should not exists"
+      when: code_dir_data.stat.exists != false
+
+
