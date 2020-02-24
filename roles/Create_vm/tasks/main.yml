@@ -1,0 +1,32 @@
+---
+# tasks file for Create_vm
+
+- name: Create a virtual machine on given ESXi hostname
+  vmware_guest:
+    hostname: 172.16.200.90
+    username: administrator@vsphere.local
+    password: Welcome*123
+    validate_certs: no
+    folder: ha-datacenter1/vm
+    name: test
+    state: poweredon
+    #guest_id: centos64Guest
+    # This is hostname of particular ESXi server on which user wants VM to be deployed
+    esxi_hostname: 172.16.200.40
+    disk:
+    - size_gb: 10
+      type: thin
+      datastore: datastore1_croco
+    hardware:
+      memory_mb: 512
+      num_cpus: 2
+      scsi: lsilogic
+    networks:
+    - name: VM Network
+      ip: 172.16.200.85
+      netmask: 255.255.255.0
+      device_type: vmxnet3
+    wait_for_ip_address: yes
+  delegate_to: localhost
+  register: deploy_vm
+

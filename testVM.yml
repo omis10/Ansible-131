@@ -1,0 +1,25 @@
+---
+
+- hosts: vcenter
+  become: yes
+  become_method: su
+  tasks:
+
+     - name: Create Datacenter
+       vmware_datacenter:
+         hostname: 172.16.200.90
+         username: administrator@vsphere.local
+         password: Welcome*123
+         port: 443
+         validate_certs: false
+         datacenter_name: test
+         state: present
+       register: debug  
+       delegate_to: localhost
+
+
+     - debug:
+         msg: "{{ debug }}"
+
+
+    
