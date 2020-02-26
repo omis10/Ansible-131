@@ -1,2 +1,15 @@
 ---
 # vars file for Create_vm
+
+vcenter_hostname: 172.16.200.90
+vcenter_username: administrator@vsphere.local
+vcenter_password: Welcome*123
+datacenter: Datacenter1
+vm_name: test2
+esxi_hostname: 172.16.200.40
+disk: 40
+datastore: datastore1_croco
+vm_ram: 512
+vm_cpus: 2
+vm_scsi: paravirtual
+type_net: vmxnet3

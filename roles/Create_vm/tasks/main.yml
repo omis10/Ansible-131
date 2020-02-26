@@ -3,30 +3,36 @@
 
 - name: Create a virtual machine on given ESXi hostname
   vmware_guest:
-    hostname: 172.16.200.90
-    username: administrator@vsphere.local
-    password: Welcome*123
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
     validate_certs: no
-    folder: ha-datacenter1/vm
-    name: test
-    state: poweredon
-    #guest_id: centos64Guest
+    datacenter: "{{ datacenter }}"
+    folder: Datacenter1/vm 
+    name: "{{ vm_name }}"
+    state: poweredoff
+    guest_id: centos64Guest
     # This is hostname of particular ESXi server on which user wants VM to be deployed
-    esxi_hostname: 172.16.200.40
+    esxi_hostname: "{{ esxi_hostname }}"
     disk:
-    - size_gb: 10
+    - size_gb: "{{ disk }}" 
       type: thin
-      datastore: datastore1_croco
+      datastore: "{{ datastore }}"
     hardware:
-      memory_mb: 512
-      num_cpus: 2
-      scsi: lsilogic
+      memory_mb: "{{ vm_ram }}"
+      num_cpus: "{{ vm_cpus }}"
+      scsi: "{{ vm_scsi }}"
     networks:
-    - name: VM Network
-      ip: 172.16.200.85
-      netmask: 255.255.255.0
-      device_type: vmxnet3
-    wait_for_ip_address: yes
+    - name: VM Network 
+    #  netmask: 255.255.255.0
+      device_type: "{{ type_net }}"
+   # wait_for_ip_address: yes
+    #template: Sles15
+    #state: powerdon
   delegate_to: localhost
   register: deploy_vm
+
+
+- debug:
+    msg: "{{ deploy_vm }}"
 
