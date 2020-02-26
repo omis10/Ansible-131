@@ -1,0 +1,25 @@
+---
+
+- hosts: vcenter
+  become: yes
+  become_method: su
+  tasks:
+
+     - name: Delete Datacenter
+       vmware_datacenter:
+         hostname: 172.16.200.90
+         username: administrator
+         password: Welcome*123
+         port: 443
+         validate_certs: false
+         datacenter_name: test
+         state: absent
+       delegate_to: localhost
+       register: datacenter_delete_result
+
+
+     - debug:
+         msg: "{{ datacenter_delete_result }}"
+
+
+    

@@ -1,0 +1,6 @@
+- hosts: vcenter
+  become: yes
+  #become_method: su
+  roles:
+    - Create_vm
+

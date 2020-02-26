@@ -3,3 +3,4 @@
 
 [Doku]
 Sles15_test ansible_port=22 ansible_host=192.168.64.213 ansible_user=root
+vcenter ansible_port=22 ansible_host=172.16.200.90  ansible_user=root
